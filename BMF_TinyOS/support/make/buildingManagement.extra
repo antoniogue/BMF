@@ -1,0 +1,154 @@
+ifeq ($(SENSORBOARD),no_sensors) 
+   PFLAGS += -DSENSORBOARD=0
+else ifeq ($(SENSORBOARD),SBT80_telosb)
+   PFLAGS += -DSENSORBOARD=1
+else ifeq ($(SENSORBOARD),std_telosb)
+   PFLAGS += -DSENSORBOARD=2
+else ifeq ($(SENSORBOARD),tynsensorbrd)
+   PFLAGS += -DSENSORBOARD=3
+else ifeq ($(SENSORBOARD),blackplug)
+   PFLAGS += -DSENSORBOARD=4
+   ifndef PLUG
+      $(error Error: NO PLUG NUMBER DEFINED FOR blackplug SENSORBOARD!)
+   else 
+      PFLAGS += -DPLUG=$(PLUG)
+   endif
+else ifeq ($(SENSORBOARD),ACmeX2)
+   PFLAGS += -DSENSORBOARD=5
+else
+   #no_sensors SENSORBOARD
+   PFLAGS += -DSENSORBOARD=0
+   SENSORBOARD = no_sensors
+   $(warning WARNING: no proper SENSORBOARD set! NO SENSOR WILL BE AVAILABLE!!!)
+endif
+
+
+
+#COMMUNICATION PROTOCOL STUFF:
+#CFLAGS += -I$(TOSDIR)/lib/net/ -I$(TOSDIR)/lib/net/ctp  -I$(TOSDIR)/lib/net/4bitle -I$(TOSDIR)/lib/net/drip
+#CFLAGS += -I$(TOSDIR)/lib/net/ -I$(TOSDIR)/lib/net/ctp -I$(TOSDIR)/lib/net/le -I$(TOSDIR)/lib/net/drip -I.
+#CFLAGS += -I$(TOSDIR)/lib/net/ -I$(TOSDIR)/lib/net/ctp -I$(TOSDIR)/lib/net/le -I$(TOSDIR)/lib/net/dip -I.
+CFLAGS += -I$(TOSDIR)/lib/net/ -I$(TOSDIR)/lib/net/ctp -I$(TOSDIR)/lib/net/le -I.
+ifdef DISSEMINATION
+   ifeq ($(DISSEMINATION),DIP) 
+      CFLAGS +=  -I$(TOSDIR)/lib/net/dip -I$(TOSDIR)/lib/net/dip/interfaces 
+      $(warning DIP Dissemination Protocol Enabled!)
+   else
+      CFLAGS +=  -I$(TOSDIR)/lib/net/drip
+      $(warning drip Dissemination Protocol Enabled!)
+    endif
+else
+   CFLAGS +=  -I$(TOSDIR)/lib/net/drip
+   $(warning drip Dissemination Protocol Enabled!)
+endif
+
+
+
+#This line is to print data on screen. This makes debug procedure easier.
+#the second line is to extend printf buffer.
+#These lines are read by the compiler only if in the make String the DEBUG parameter is declared
+ifdef DEBUG
+ #CFLAGS += -I$(TOSDIR)/lib/printf/
+ #CFLAGS += -DPRINTF_BUFFER_SIZE=3200
+ 
+ ifeq ($(DEBUG),OK)
+  PFLAGS += -DDEBUG=1
+  CFLAGS += -I$(TOSDIR)/lib/printf/
+  CFLAGS += -DPRINTF_BUFFER_SIZE=3200
+  PFLAGS += -DNEW_PRINTF_SEMANTICS=1
+ else ifeq ($(DEBUG),VERBOSE)
+  PFLAGS += -DDEBUG=2
+  CFLAGS += -I$(TOSDIR)/lib/printf/
+  CFLAGS += -DPRINTF_BUFFER_SIZE=3200
+  PFLAGS += -DNEW_PRINTF_SEMANTICS=1
+ else ifeq ($(DEBUG),NO)
+  PFLAGS += -DDEBUG=0
+ else
+  PFLAGS += -DDEBUG=0
+  $(warning WARNING: no proper DEBUG set! NO DEBUG WILL BE AVAILABLE!!!)
+#  $(error Error: no proper DEBUG set)
+ endif
+
+else 
+ PFLAGS += -DDEBUG=0
+endif
+
+PFLAGS += -DOK=1 -DVERBOSE=2 -DNO_DEBUG=0
+
+
+# MAX_GROUPS is the max number of groups a node can belong to.
+ifdef MAX_GROUPS
+      PFLAGS += -DMAX_GROUPS=$(MAX_GROUPS)
+else
+      PFLAGS += -DMAX_GROUPS=10
+endif
+
+
+
+# MAX_REQUESTS is the max number of timed requests a node can manage.
+# MAX_REQUESTS will be the size of stored requests and the size of available timers to schedule those requests.
+ifdef MAX_REQUESTS
+      PFLAGS += -DMAX_REQUESTS=$(MAX_REQUESTS)
+else
+      PFLAGS += -DMAX_REQUESTS=10
+endif
+
+
+#For energy monitoring purpose we can link Energy monitoring stuff 
+#declaring at compilation time the ENERGY_MONITORING variable
+#ifdef ENERGY_MONITORING 
+#      PFLAGS += -DENERGY_MONITORING=1
+#endif
+ifdef ENERGY_MONITORING
+ ifeq ($(ENERGY_MONITORING),YES)
+  PFLAGS += -DENERGY_MONITORING=1
+ else ifneq ($(ENERGY_MONITORING),NO)
+  $(warning WARNING: no proper ENERGY_MONITORING set! NO ENERGY MONITORING WILL BE AVAILABLE!!!)
+ endif
+endif
+
+
+
+#FOLLOWING LINES ARE TO ENABLE FUNCTIONS TO BE DEPLOYED ON THE NODES
+ifdef FUNCTIONS
+ ifeq ($(FUNCTIONS),STANDARD)
+  PFLAGS += -DFUNCTIONS=1
+  $(warning STANDARD FUNCTIONS ARE GOING TO BE DEPLOYED ON THIS NODE)
+ else ifeq ($(FUNCTIONS),STANDARD_ELABORATION_ONLY)
+  PFLAGS += -DFUNCTIONS=2
+  $(warning STANDARD ELABORATION FUNCTIONS ARE GOING TO BE DEPLOYED ON THIS NODE)
+ else ifeq ($(FUNCTIONS),STANDARD_THRESHOLD_ONLY)
+  PFLAGS += -DFUNCTIONS=3
+  $(warning STANDARD THRESHOLD FUNCTIONS ARE GOING TO BE DEPLOYED ON THIS NODE)
+ else 
+  PFLAGS += -DFUNCTIONS=1
+  $(warning STANDARD FUNCTIONS ARE GOING TO BE DEPLOYED ON THIS NODE)
+ endif
+endif
+
+ifndef FUNCTIONS
+  PFLAGS += -DFUNCTIONS=1
+  $(warning STANDARD FUNCTIONS ARE GOING TO BE DEPLOYED ON THIS NODE)
+endif
+
+
+
+
+#uncomment the following line if you are using TinyOS 2.1.0. If you are using TinyOS 2.1.1 leave the following comment:
+#PFLAGS += -DTINY_OS_2_1_0=1
+
+
+
+
+
+
+#includes dirs
+PFLAGS += -I$(BUILDING_MANAGEMENT_DIR)/tos/interfaces
+PFLAGS += -I$(BUILDING_MANAGEMENT_DIR)/tos/system
+PFLAGS += -I$(BUILDING_MANAGEMENT_DIR)/tos/platforms
+PFLAGS += -I$(BUILDING_MANAGEMENT_DIR)/tos/platforms/$(PLATFORM)
+PFLAGS += -I$(BUILDING_MANAGEMENT_DIR)/tos/sensorboards/$(SENSORBOARD)
+PFLAGS += -I$(BUILDING_MANAGEMENT_DIR)/tos/sensorboards/$(SENSORBOARD)/sensorAbstractions
+PFLAGS += -I$(BUILDING_MANAGEMENT_DIR)/tos/sensorboards/no_sensors/sensorAbstractions
+
+

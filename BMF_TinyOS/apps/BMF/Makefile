@@ -1,0 +1,8 @@
+COMPONENT=BMFManagerAppC
+#COMPONENT=RequestsManagerC
+#COMPONENT=ProcessingManagerC
+
+#PFLAGS += -DENERGY_MONITORING=0
+PFLAGS += -DTOSH_DATA_LENGTH=40
+
+include ../Makerules

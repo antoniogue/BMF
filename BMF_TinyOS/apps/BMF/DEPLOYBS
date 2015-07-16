@@ -1,0 +1,3 @@
+echo make telosb SENSORBOARD=no_sensors DEBUG=NO MAX_GROUPS=5 install,0 CC2420_CHANNEL=20 bsl,$1
+make telosb SENSORBOARD=no_sensors DEBUG=NO MAX_GROUPS=5 install,0 CC2420_CHANNEL=20 bsl,/dev/ttyUSB0
+#make span SENSORBOARD=no_sensors DEBUG=NO MAX_GROUPS=5 install,0 CC2420_CHANNEL=20 bsl,/dev/ttyUSB0

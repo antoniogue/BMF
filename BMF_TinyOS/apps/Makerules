@@ -1,0 +1,7 @@
+
+
+BUILDING_MANAGEMENT_DIR ?= /home/user/Dropbox/work/BMF/TinyOS_Code
+
+TOSMAKE_PATH += $(BUILDING_MANAGEMENT_DIR)/support/make
+GOALS += buildingManagement
+include $(MAKERULES)

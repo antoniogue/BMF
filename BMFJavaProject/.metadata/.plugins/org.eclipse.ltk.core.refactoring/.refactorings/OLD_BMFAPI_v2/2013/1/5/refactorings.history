@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring accessors="true" comment="Delete element from project &apos;OLD_BMFAPI_v2&apos;&#x0D;&#x0A;- Original project: &apos;OLD_BMFAPI_v2&apos;&#x0D;&#x0A;- Original element: &apos;BMF_JAVA_NEW&apos;" description="Delete element" element1="BMF_JAVA_NEW" elements="0" flags="589830" id="org.eclipse.jdt.ui.delete" resources="1" stamp="1359559978250" subPackages="false" version="1.0"/>
+</session>
